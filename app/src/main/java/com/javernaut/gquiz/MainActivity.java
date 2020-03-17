@@ -14,8 +14,14 @@ public class MainActivity extends AppCompatActivity {
     private Button falseButton;
     private TextView questionView;
 
-    private final Question question =
-            new Question(R.string.question_text, true);
+    private Question[] mQuestionBank = new Question[] {
+            new Question(R.string.question_australia, true),
+            new Question(R.string.question_oceans, true),
+            new Question(R.string.question_mideast, false),
+            new Question(R.string.question_africa, false),
+            new Question(R.string.question_americas, true),
+            new Question(R.string.question_asia, true),
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         falseButton = findViewById(R.id.false_button);
         questionView = findViewById(R.id.question);
 
-        questionView.setText(question.getQuestionResId());
+        questionView.setText(getCurrentQuestion().getQuestionResId());
 
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,8 +49,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private Question getCurrentQuestion() {
+        return mQuestionBank[0];
+    }
+
     private void onAnswerSelected(boolean currentAnswer) {
-        boolean wasTheAnswerCorrect = currentAnswer == question.getCorrectAnswer();
+        boolean wasTheAnswerCorrect = currentAnswer == getCurrentQuestion().getCorrectAnswer();
 
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
     }
