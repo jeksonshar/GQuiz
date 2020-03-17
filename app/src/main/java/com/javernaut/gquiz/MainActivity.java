@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button trueButton;
     private Button falseButton;
+    private Button nextButton;
     private TextView questionView;
 
     private Question[] mQuestionBank = new Question[] {
@@ -20,8 +21,10 @@ public class MainActivity extends AppCompatActivity {
             new Question(R.string.question_mideast, false),
             new Question(R.string.question_africa, false),
             new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true),
+            new Question(R.string.question_asia, true)
     };
+
+    private int currentQuestionIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
+        nextButton = findViewById(R.id.next_button);
         questionView = findViewById(R.id.question);
 
-        questionView.setText(getCurrentQuestion().getQuestionResId());
+        applyCurrentQuestion();
 
         trueButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,10 +51,29 @@ public class MainActivity extends AppCompatActivity {
                 onAnswerSelected(false);
             }
         });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // move to next question
+                if (currentQuestionIndex == mQuestionBank.length - 1) {
+                    currentQuestionIndex = 0;
+                } else {
+                    currentQuestionIndex++;
+                }
+
+                // apply question
+                applyCurrentQuestion();
+            }
+        });
+    }
+
+    private void applyCurrentQuestion() {
+        questionView.setText(getCurrentQuestion().getQuestionResId());
     }
 
     private Question getCurrentQuestion() {
-        return mQuestionBank[0];
+        return mQuestionBank[currentQuestionIndex];
     }
 
     private void onAnswerSelected(boolean currentAnswer) {
