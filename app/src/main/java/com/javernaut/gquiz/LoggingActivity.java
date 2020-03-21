@@ -3,6 +3,7 @@ package com.javernaut.gquiz;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +31,12 @@ public abstract class LoggingActivity extends AppCompatActivity {
     protected void onPause() {
         log("onPause");
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        log("onSaveInstanceState");
     }
 
     @Override
