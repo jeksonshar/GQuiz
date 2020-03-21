@@ -6,7 +6,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class MainActivity extends LoggingActivity {
+
+    private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
 
     private Button trueButton;
     private Button falseButton;
@@ -28,6 +33,10 @@ public class MainActivity extends LoggingActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+            currentQuestionIndex = savedInstanceState.getInt(KEY_CURRENT_QUESTION_INDEX);
+        }
 
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
@@ -64,6 +73,12 @@ public class MainActivity extends LoggingActivity {
                 applyCurrentQuestion();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CURRENT_QUESTION_INDEX, currentQuestionIndex);
     }
 
     private void applyCurrentQuestion() {
