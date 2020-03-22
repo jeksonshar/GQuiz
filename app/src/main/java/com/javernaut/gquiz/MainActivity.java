@@ -1,6 +1,7 @@
 package com.javernaut.gquiz;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,18 +17,28 @@ public class MainActivity extends LoggingActivity {
     private Button trueButton;
     private Button falseButton;
     private Button nextButton;
+    private Button checkButton;                                                             //
     private TextView questionView;
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_australia, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true)
+            new Question(R.string.question_australia, true,
+                    false, false),                                  //
+            new Question(R.string.question_oceans, true,
+                    false, false),                                  //
+            new Question(R.string.question_mideast, false,
+                    false, false),                                  //
+            new Question(R.string.question_africa, false,
+                    false, false),                                  //
+            new Question(R.string.question_americas, true,
+                    false, false),                                  //
+            new Question(R.string.question_asia, true,
+                    false, false)                                   //
     };
 
     private int currentQuestionIndex = 0;
+    private int countQuestion = 0;                                                          //
+    private int countTrueQuestion = 0;                                                      //
+    private int allQuestion = mQuestionBank.length;                                         //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +52,7 @@ public class MainActivity extends LoggingActivity {
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
+        checkButton = findViewById(R.id.check_button);                                      //
         questionView = findViewById(R.id.question);
 
         applyCurrentQuestion();
@@ -49,6 +61,8 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(true);
+                wasAnswer(mQuestionBank[currentQuestionIndex].getWasAnswer());              //
+                wasTrueAnswer(mQuestionBank[currentQuestionIndex].getWasTrueAnswer());      //
             }
         });
 
@@ -56,6 +70,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(false);
+                wasAnswer(mQuestionBank[currentQuestionIndex].getWasAnswer());              //
             }
         });
 
@@ -73,6 +88,14 @@ public class MainActivity extends LoggingActivity {
                 applyCurrentQuestion();
             }
         });
+
+        checkButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showToastQuestion();
+            }
+        });
+
     }
 
     @Override
@@ -97,5 +120,27 @@ public class MainActivity extends LoggingActivity {
 
     private void showToast(int textId) {
         Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void wasAnswer(boolean wasAnswer) {                                            //
+        if (!wasAnswer) {
+            countQuestion++;
+            mQuestionBank[currentQuestionIndex].setWasAnswer(true);
+        }
+    }
+
+    private void wasTrueAnswer(boolean wasTrueAnswer) {                                    //
+        if (!wasTrueAnswer) {
+            countTrueQuestion++;
+            mQuestionBank[currentQuestionIndex].setWasTrueAnswer(true);
+        }
+    }
+
+    private void showToastQuestion() {                                                     //
+        CharSequence text = "Отвечено " + countQuestion + "/" + allQuestion +
+                " вопросов.\n"  +  "Правильных ответов: " + countTrueQuestion;
+        Toast toast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.show();
     }
 }
