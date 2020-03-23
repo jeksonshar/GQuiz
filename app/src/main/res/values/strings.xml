@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GQuiz</string>
+    <string name="app_name" translatable="false">GQuiz</string>
 
     <string name="next_button">Next</string>
     <string name="check_button">Check</string>

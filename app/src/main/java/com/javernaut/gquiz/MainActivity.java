@@ -140,7 +140,9 @@ public class MainActivity extends LoggingActivity {
     }
 
     private void showToast(int textId) {
-        Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM, 0, 20);
+        toast.show();
     }
 
     private void wasAnswer(boolean wasAnswer) {                                             //
@@ -161,7 +163,7 @@ public class MainActivity extends LoggingActivity {
         CharSequence text = "Отвечено " + countQuestion + "/" + allQuestion +
                 " вопросов.\n"  +  "Правильных ответов: " + countTrueQuestion;
         Toast toast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM, 0, 0);
+        toast.setGravity(Gravity.BOTTOM, 0, 20);
         toast.show();
     }
 }
