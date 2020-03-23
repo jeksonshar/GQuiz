@@ -9,10 +9,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends LoggingActivity {
 
     private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
+    private static final String KEY_COUNT_QUESTION = "key_count_question";                  //
+    private static final String KEY_COUNT_TRUE_QUESTION = "key_count_true_question";        //
+    private static final List<Boolean> wasAnswer = new ArrayList<>();                       //
+    private static final List<Boolean> wasTrueAnswer = new ArrayList<>();                   //
+
 
     private Button trueButton;
     private Button falseButton;
@@ -47,6 +54,12 @@ public class MainActivity extends LoggingActivity {
 
         if (savedInstanceState != null) {
             currentQuestionIndex = savedInstanceState.getInt(KEY_CURRENT_QUESTION_INDEX);
+            countQuestion = savedInstanceState.getInt(KEY_COUNT_QUESTION);                  //
+            countTrueQuestion = savedInstanceState.getInt(KEY_COUNT_TRUE_QUESTION);         //
+            for (int x = 0; x < mQuestionBank.length; x++) {                                //
+                mQuestionBank[x].setWasAnswer(wasAnswer.get(x));
+                mQuestionBank[x].setWasTrueAnswer(wasTrueAnswer.get(x));
+            }
         }
 
         trueButton = findViewById(R.id.true_button);
@@ -62,7 +75,6 @@ public class MainActivity extends LoggingActivity {
             public void onClick(View v) {
                 onAnswerSelected(true);
                 wasAnswer(mQuestionBank[currentQuestionIndex].getWasAnswer());              //
-                wasTrueAnswer(mQuestionBank[currentQuestionIndex].getWasTrueAnswer());      //
             }
         });
 
@@ -95,13 +107,18 @@ public class MainActivity extends LoggingActivity {
                 showToastQuestion();
             }
         });
-
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_QUESTION_INDEX, currentQuestionIndex);
+        outState.putInt(KEY_COUNT_QUESTION, countQuestion);                                 //
+        outState.putInt(KEY_COUNT_TRUE_QUESTION, countTrueQuestion);                        //
+        for (Question question : mQuestionBank) {                                           //
+            wasAnswer.add(question.getWasAnswer());                                         //
+            wasTrueAnswer.add(question.getWasTrueAnswer());                                 //
+        }
     }
 
     private void applyCurrentQuestion() {
@@ -116,27 +133,31 @@ public class MainActivity extends LoggingActivity {
         boolean wasTheAnswerCorrect = currentAnswer == getCurrentQuestion().getCorrectAnswer();
 
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
+
+        if (wasTheAnswerCorrect) {                                                          //
+            wasTrueAnswer(mQuestionBank[currentQuestionIndex].getWasTrueAnswer());
+        }
     }
 
     private void showToast(int textId) {
         Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
     }
 
-    private void wasAnswer(boolean wasAnswer) {                                            //
+    private void wasAnswer(boolean wasAnswer) {                                             //
         if (!wasAnswer) {
             countQuestion++;
             mQuestionBank[currentQuestionIndex].setWasAnswer(true);
         }
     }
 
-    private void wasTrueAnswer(boolean wasTrueAnswer) {                                    //
+    private void wasTrueAnswer(boolean wasTrueAnswer) {                                     //
         if (!wasTrueAnswer) {
             countTrueQuestion++;
             mQuestionBank[currentQuestionIndex].setWasTrueAnswer(true);
         }
     }
 
-    private void showToastQuestion() {                                                     //
+    private void showToastQuestion() {                                                      //
         CharSequence text = "Отвечено " + countQuestion + "/" + allQuestion +
                 " вопросов.\n"  +  "Правильных ответов: " + countTrueQuestion;
         Toast toast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
