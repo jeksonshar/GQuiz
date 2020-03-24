@@ -1,5 +1,6 @@
 package com.javernaut.gquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,7 @@ public class MainActivity extends LoggingActivity {
 
     private Button trueButton;
     private Button falseButton;
+    private Button cheatButton;
     private Button nextButton;
     private TextView questionView;
 
@@ -32,6 +34,7 @@ public class MainActivity extends LoggingActivity {
         trueButton = findViewById(R.id.true_button);
         falseButton = findViewById(R.id.false_button);
         nextButton = findViewById(R.id.next_button);
+        cheatButton = findViewById(R.id.cheat_button);
         questionView = findViewById(R.id.question);
 
         applyCurrentQuestion();
@@ -47,6 +50,14 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(false);
+            }
+        });
+
+        cheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CheatActivity.class);
+                startActivity(intent);
             }
         });
 
