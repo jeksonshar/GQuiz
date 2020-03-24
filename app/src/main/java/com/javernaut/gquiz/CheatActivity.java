@@ -3,6 +3,7 @@ package com.javernaut.gquiz;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class CheatActivity extends LoggingActivity {
@@ -14,10 +15,15 @@ public class CheatActivity extends LoggingActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
 
-        boolean correctAnswer = getIntent().getBooleanExtra(KEY_CORRECT_ANSWER, false);
+        findViewById(R.id.show_correct_answer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean correctAnswer = getIntent().getBooleanExtra(KEY_CORRECT_ANSWER, false);
 
-        TextView correctAnswerView = findViewById(R.id.correct_answer);
-        correctAnswerView.setText(String.valueOf(correctAnswer));
+                TextView correctAnswerView = findViewById(R.id.correct_answer);
+                correctAnswerView.setText(String.valueOf(correctAnswer));
+            }
+        });
     }
 
     public static Intent makeIntent(Context context, boolean correctAnswer) {
