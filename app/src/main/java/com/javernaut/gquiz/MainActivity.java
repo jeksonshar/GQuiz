@@ -1,5 +1,6 @@
 package com.javernaut.gquiz;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 public class MainActivity extends LoggingActivity {
+
+    private static final int REQUEST_CODE_CHEAT = 42;
+    private static final int REQUEST_CODE_CHEAT_2 = 423;
 
     private Button trueButton;
     private Button falseButton;
@@ -56,8 +62,9 @@ public class MainActivity extends LoggingActivity {
         cheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        CheatActivity.makeIntent(MainActivity.this, getCurrentQuestion().getCorrectAnswer())
+                startActivityForResult(
+                        CheatActivity.makeIntent(MainActivity.this, getCurrentQuestion().getCorrectAnswer()),
+                        REQUEST_CODE_CHEAT
                 );
             }
         });
@@ -76,6 +83,17 @@ public class MainActivity extends LoggingActivity {
                 applyCurrentQuestion();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (resultCode == Activity.RESULT_OK) {
+                showToast(R.string.judgment_toast);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void applyCurrentQuestion() {

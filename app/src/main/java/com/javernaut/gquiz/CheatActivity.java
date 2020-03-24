@@ -1,5 +1,6 @@
 package com.javernaut.gquiz;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ public class CheatActivity extends LoggingActivity {
 
                 TextView correctAnswerView = findViewById(R.id.correct_answer);
                 correctAnswerView.setText(String.valueOf(correctAnswer));
+
+                setResult(Activity.RESULT_OK);
             }
         });
     }
