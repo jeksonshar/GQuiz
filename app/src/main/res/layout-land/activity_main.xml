@@ -30,13 +30,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/false_button" />
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/next_button"
-        android:drawableRight="@drawable/arrow_right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/next_button" />
+        <Button
+            android:id="@+id/next_button"
+            android:drawableRight="@drawable/arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:text="@string/next_button" />
+    </LinearLayout>
 
 </LinearLayout>
