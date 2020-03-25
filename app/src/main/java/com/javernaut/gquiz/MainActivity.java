@@ -1,7 +1,6 @@
 package com.javernaut.gquiz;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -97,8 +96,6 @@ public class MainActivity extends LoggingActivity {
     }
 
     private void showToast(int textId) {
-        Toast toast = Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM, 0, 30);
-        toast.show();
+        Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
     }
 }
