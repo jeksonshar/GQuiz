@@ -66,7 +66,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(true);
-                wasAnswer(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+                addCountQuestion(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
             }
         });
 
@@ -74,7 +74,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(false);
-                wasAnswer(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+                addCountQuestion(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
             }
         });
 
@@ -126,7 +126,7 @@ public class MainActivity extends LoggingActivity {
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
 
         if (wasTheAnswerCorrect) {
-            wasTrueAnswer(wasTrueAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+            addCountTrueQuestion(wasTrueAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
         }
     }
 
@@ -134,7 +134,7 @@ public class MainActivity extends LoggingActivity {
         Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
     }
 
-    private void wasAnswer(boolean wasAnswerVar) {
+    private void addCountQuestion(boolean wasAnswerVar) {
         if (!wasAnswerVar) {
             wasAnswerSave.putBoolean(String.valueOf(currentQuestionIndex), true);
             if (countQuestion <= mQuestionBank.length) {
@@ -143,7 +143,7 @@ public class MainActivity extends LoggingActivity {
         }
     }
 
-    private void wasTrueAnswer(boolean wasTrueAnswerVar) {
+    private void addCountTrueQuestion(boolean wasTrueAnswerVar) {
         if (!wasTrueAnswerVar) {
             wasTrueAnswerSave.putBoolean(String.valueOf(currentQuestionIndex), true);
             if (countTrueQuestion <= mQuestionBank.length) {
