@@ -9,6 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 public class MainActivity extends LoggingActivity {
 
     private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
@@ -32,8 +34,9 @@ public class MainActivity extends LoggingActivity {
             new Question(R.string.question_asia, true)
     };
 
-    private Bundle wasAnswerSave = new Bundle();
-    private Bundle wasTrueAnswerSave = new Bundle();
+    private boolean[] wasAnswerSave = new boolean[mQuestionBank.length];
+    private boolean[] wasTrueAnswerSave = new boolean[mQuestionBank.length];
+
 
     private int currentQuestionIndex = 0;
     private int countQuestion = 0;
@@ -45,13 +48,20 @@ public class MainActivity extends LoggingActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        for (int x = 0; x < mQuestionBank.length; x++) {
+            wasAnswerSave[x] = false;
+            wasTrueAnswerSave[x] = false;
+        }
+
         if (savedInstanceState != null) {
             currentQuestionIndex = savedInstanceState.getInt(KEY_CURRENT_QUESTION_INDEX);
             countQuestion = savedInstanceState.getInt(KEY_COUNT_QUESTION);
             countTrueQuestion = savedInstanceState.getInt(KEY_COUNT_TRUE_QUESTION);
 
-            wasAnswerSave.putAll(savedInstanceState.getBundle(KEY_WAS_ANSWER_SAVE));
-            wasTrueAnswerSave.putAll(savedInstanceState.getBundle(KEY_WAS_TRUE_ANSWER_SAVE));
+            for (int x = 0; x < mQuestionBank.length; x++) {
+                wasAnswerSave[x] = Objects.requireNonNull(savedInstanceState.getBooleanArray(KEY_WAS_ANSWER_SAVE))[x];
+                wasTrueAnswerSave[x] = Objects.requireNonNull(savedInstanceState.getBooleanArray(KEY_WAS_TRUE_ANSWER_SAVE))[x];
+            }
         }
 
         trueButton = findViewById(R.id.true_button);
@@ -66,7 +76,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(true);
-                addCountQuestion(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+                addCountQuestion(wasAnswerSave[currentQuestionIndex]);
             }
         });
 
@@ -74,7 +84,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 onAnswerSelected(false);
-                addCountQuestion(wasAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+                addCountQuestion(wasAnswerSave[currentQuestionIndex]);
             }
         });
 
@@ -108,8 +118,9 @@ public class MainActivity extends LoggingActivity {
         outState.putInt(KEY_COUNT_QUESTION, countQuestion);
         outState.putInt(KEY_COUNT_TRUE_QUESTION, countTrueQuestion);
 
-        outState.putBundle(KEY_WAS_ANSWER_SAVE, wasAnswerSave);
-        outState.putBundle(KEY_WAS_TRUE_ANSWER_SAVE, wasTrueAnswerSave);
+
+        outState.putBooleanArray(KEY_WAS_ANSWER_SAVE, wasAnswerSave);
+        outState.putBooleanArray(KEY_WAS_TRUE_ANSWER_SAVE, wasTrueAnswerSave);
     }
 
     private void applyCurrentQuestion() {
@@ -126,7 +137,7 @@ public class MainActivity extends LoggingActivity {
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
 
         if (wasTheAnswerCorrect) {
-            addCountTrueQuestion(wasTrueAnswerSave.getBoolean(String.valueOf(currentQuestionIndex)));
+            addCountTrueQuestion(wasTrueAnswerSave[currentQuestionIndex]);
         }
     }
 
@@ -136,7 +147,7 @@ public class MainActivity extends LoggingActivity {
 
     private void addCountQuestion(boolean wasAnswerVar) {
         if (!wasAnswerVar) {
-            wasAnswerSave.putBoolean(String.valueOf(currentQuestionIndex), true);
+            wasAnswerSave[currentQuestionIndex] = true;
             if (countQuestion <= mQuestionBank.length) {
                 countQuestion++;
             }
@@ -145,7 +156,7 @@ public class MainActivity extends LoggingActivity {
 
     private void addCountTrueQuestion(boolean wasTrueAnswerVar) {
         if (!wasTrueAnswerVar) {
-            wasTrueAnswerSave.putBoolean(String.valueOf(currentQuestionIndex), true);
+            wasTrueAnswerSave[currentQuestionIndex] = true;
             if (countTrueQuestion <= mQuestionBank.length) {
                 countTrueQuestion++;
             }
