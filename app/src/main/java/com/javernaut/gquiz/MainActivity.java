@@ -9,12 +9,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.Objects;
-
 public class MainActivity extends LoggingActivity {
 
     private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
     private static final String KEY_WAS_ANSWER = "key_was_answer";
+    private final int NOT_ANSWERED = 0;
+    private final int WRONG_ANSWER = 1;
+    private final int CORRECT_ANSWER = 2;
 
     private Button trueButton;
     private Button falseButton;
@@ -41,10 +42,7 @@ public class MainActivity extends LoggingActivity {
 
         if (savedInstanceState != null) {
             currentQuestionIndex = savedInstanceState.getInt(KEY_CURRENT_QUESTION_INDEX);
-            for (int x = 0; x < mQuestionBank.length; x++) {
-                wasAnswer[x] = Objects.requireNonNull(
-                        savedInstanceState.getIntArray(KEY_WAS_ANSWER))[x];
-            }
+            wasAnswer = savedInstanceState.getIntArray(KEY_WAS_ANSWER);
         }
 
         trueButton = findViewById(R.id.true_button);
@@ -113,10 +111,10 @@ public class MainActivity extends LoggingActivity {
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
 
         if (wasTheAnswerCorrect) {
-            wasAnswer[currentQuestionIndex] = 2;
+            wasAnswer[currentQuestionIndex] = CORRECT_ANSWER;
         } else {
-            if (wasAnswer[currentQuestionIndex] == 0) {
-                wasAnswer[currentQuestionIndex] = 1;
+            if (wasAnswer[currentQuestionIndex] == NOT_ANSWERED) {
+                wasAnswer[currentQuestionIndex] = WRONG_ANSWER;
             }
         }
     }
@@ -129,10 +127,10 @@ public class MainActivity extends LoggingActivity {
         int countAnswerWrong = 0;
         int countAnswerTrue = 0;
         for (int x = 0; x < mQuestionBank.length; x++) {
-            if(wasAnswer[x] == 1) {
+            if(wasAnswer[x] == WRONG_ANSWER) {
                 countAnswerWrong++;
             } else {
-                if (wasAnswer[x] == 2) {
+                if (wasAnswer[x] == CORRECT_ANSWER) {
                     countAnswerTrue++;
                 }
             }
