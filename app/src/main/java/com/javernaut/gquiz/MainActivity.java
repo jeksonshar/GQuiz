@@ -14,8 +14,6 @@ import java.util.Objects;
 public class MainActivity extends LoggingActivity {
 
     private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
-    private static final String KEY_COUNT_QUESTION = "key_count_question";
-    private static final String KEY_COUNT_TRUE_QUESTION = "key_count_true_question";
     private static final String KEY_WAS_ANSWER = "key_was_answer";
 
     private Button trueButton;
@@ -33,9 +31,8 @@ public class MainActivity extends LoggingActivity {
             new Question(R.string.question_asia, true)
     };
 
-    private int[] wasAnswer = new int[mQuestionBank.length*2 + 2];
+    private int[] wasAnswer = new int[mQuestionBank.length];
     private int currentQuestionIndex = 0;
-    private int allQuestion = mQuestionBank.length;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +41,9 @@ public class MainActivity extends LoggingActivity {
 
         if (savedInstanceState != null) {
             currentQuestionIndex = savedInstanceState.getInt(KEY_CURRENT_QUESTION_INDEX);
-            wasAnswer[wasAnswer.length - 2] = savedInstanceState.getInt(KEY_COUNT_QUESTION);
-            wasAnswer[wasAnswer.length - 1] = savedInstanceState.getInt(KEY_COUNT_TRUE_QUESTION);
-            for (int x = 0; x < allQuestion; x++) {
+            for (int x = 0; x < mQuestionBank.length; x++) {
                 wasAnswer[x] = Objects.requireNonNull(
                         savedInstanceState.getIntArray(KEY_WAS_ANSWER))[x];
-                wasAnswer[x + allQuestion] = Objects.requireNonNull(
-                        savedInstanceState.getIntArray(KEY_WAS_ANSWER))[x + allQuestion];
             }
         }
 
@@ -80,7 +73,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 // move to next question
-                if (currentQuestionIndex == allQuestion - 1) {
+                if (currentQuestionIndex == mQuestionBank.length - 1) {
                     currentQuestionIndex = 0;
                 } else {
                     currentQuestionIndex++;
@@ -103,8 +96,6 @@ public class MainActivity extends LoggingActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_QUESTION_INDEX, currentQuestionIndex);
-        outState.putInt(KEY_COUNT_QUESTION, wasAnswer[wasAnswer.length - 2]);
-        outState.putInt(KEY_COUNT_TRUE_QUESTION, wasAnswer[wasAnswer.length - 1]);
         outState.putIntArray(KEY_WAS_ANSWER, wasAnswer);
     }
 
@@ -122,36 +113,32 @@ public class MainActivity extends LoggingActivity {
         showToast(wasTheAnswerCorrect ? R.string.correct_toast : R.string.incorrect_toast);
 
         if (wasTheAnswerCorrect) {
-            addCountTrueQuestion(wasAnswer[currentQuestionIndex + allQuestion]);
+            wasAnswer[currentQuestionIndex] = 2;
+        } else {
+            if (wasAnswer[currentQuestionIndex] == 0) {
+                wasAnswer[currentQuestionIndex] = 1;
+            }
         }
-        addCountQuestion(wasAnswer[currentQuestionIndex]);
     }
 
     private void showToast(int textId) {
         Toast.makeText(MainActivity.this, textId, Toast.LENGTH_SHORT).show();
     }
 
-    private void addCountQuestion(int wasAnswerVar) {
-        if (wasAnswerVar == 0) {
-            wasAnswer[currentQuestionIndex] = 1;
-            if (wasAnswer[wasAnswer.length - 2] <= allQuestion) {
-                wasAnswer[wasAnswer.length - 2]++;
-            }
-        }
-    }
-
-    private void addCountTrueQuestion(int wasTrueAnswerVar) {
-        if (wasTrueAnswerVar == 0) {
-            wasAnswer[currentQuestionIndex + allQuestion] = 1;
-            if (wasAnswer[wasAnswer.length - 1] <= allQuestion) {
-                wasAnswer[wasAnswer.length - 1]++;
-            }
-        }
-    }
-
     private void showToastQuestion() {
-        CharSequence text = "Отвечено " + wasAnswer[wasAnswer.length - 2] + "/" + allQuestion +
-                " вопросов.\n"  +  "Правильных ответов: " + wasAnswer[wasAnswer.length - 1];
+        int countAnswerWrong = 0;
+        int countAnswerTrue = 0;
+        for (int x = 0; x < mQuestionBank.length; x++) {
+            if(wasAnswer[x] == 1) {
+                countAnswerWrong++;
+            } else {
+                if (wasAnswer[x] == 2) {
+                    countAnswerTrue++;
+                }
+            }
+        }
+        CharSequence text = "Отвечено " + (countAnswerTrue + countAnswerWrong) + "/" + mQuestionBank.length +
+                " вопросов.\n"  +  "Правильных ответов: " + countAnswerTrue;
         Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
     }
 }
