@@ -19,9 +19,17 @@ public class CheckActivity extends AppCompatActivity {
         setContentView(R.layout.activity_check);
 
         TextView checkAnswerView = findViewById(R.id.check_View);
-        checkAnswerView.setText("Отвечено " + getIntent().getIntExtra(KEY_ANSWER, 0)
-                + "/" + getIntent().getIntExtra(KEY_QUESTION, 0) + " вопросов\n" +
-                "правильных ответов: " + getIntent().getIntExtra(KEY_TRUE_QUESTION, 0));
+
+        StringBuilder check = new StringBuilder();
+        check.append("Отвечено ");
+        check.append(getIntent().getIntExtra(KEY_ANSWER, 0));
+        check.append("/");
+        check.append(getIntent().getIntExtra(KEY_QUESTION, 0));
+        check.append(" вопросов\n");
+        check.append("Правильных ответов: ");
+        check.append(getIntent().getIntExtra(KEY_TRUE_QUESTION, 0));
+
+        checkAnswerView.setText(check);
     }
 
 

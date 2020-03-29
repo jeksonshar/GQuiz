@@ -14,8 +14,7 @@ public class CheatActivity extends LoggingActivity {
     private static final String KEY_CORRECT_ANSWER = "key_correct_answer";
     private static final String RESULT_SAVED = "result_saved";
 
-    private int result = 0;
-    private boolean correctAnswer;
+    private boolean wasCheat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,29 +22,27 @@ public class CheatActivity extends LoggingActivity {
         setContentView(R.layout.activity_cheat);
 
         if (savedInstanceState != null) {
-            result = savedInstanceState.getInt(RESULT_SAVED);
-            if (result > 0){
-                correctAnswer = savedInstanceState.getBoolean(KEY_CORRECT_ANSWER);
-
-                TextView correctAnswerView = findViewById(R.id.correct_answer);
-                correctAnswerView.setText(String.valueOf(correctAnswer));
-
-                setResult(Activity.RESULT_OK);
+            wasCheat = savedInstanceState.getBoolean(RESULT_SAVED);
+            if (wasCheat){
+                setAnswerView();
             }
         }
 
         findViewById(R.id.show_correct_answer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                correctAnswer = getIntent().getBooleanExtra(KEY_CORRECT_ANSWER, false);
-
-                TextView correctAnswerView = findViewById(R.id.correct_answer);
-                correctAnswerView.setText(String.valueOf(correctAnswer));
-
-                setResult(Activity.RESULT_OK);
-                result++;
+                setAnswerView();
+                wasCheat = true;
             }
         });
+    }
+
+    private void setAnswerView() {
+        boolean correctAnswer = getIntent().getBooleanExtra(KEY_CORRECT_ANSWER, false);
+        TextView correctAnswerView = findViewById(R.id.correct_answer);
+        correctAnswerView.setText(String.valueOf(correctAnswer));
+
+        setResult(Activity.RESULT_OK);
     }
 
     public static Intent makeIntent(Context context, boolean correctAnswer) {
@@ -57,7 +54,6 @@ public class CheatActivity extends LoggingActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean(KEY_CORRECT_ANSWER, correctAnswer);
-        outState.putInt(RESULT_SAVED, result);
+        outState.putBoolean(RESULT_SAVED, wasCheat);
     }
 }

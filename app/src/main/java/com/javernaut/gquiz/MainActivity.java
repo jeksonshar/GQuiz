@@ -14,9 +14,9 @@ import androidx.annotation.Nullable;
 public class MainActivity extends LoggingActivity {
 
     private static final int REQUEST_CODE_CHEAT = 42;
-    private static final int REQUEST_CODE_CHECK = 423;
     private static final String KEY_CURRENT_QUESTION_INDEX = "key_current_question_index";
     private static final String KEY_WAS_ANSWER = "key_was_answer";
+
     private final int NOT_ANSWERED = 0;
     private final int WRONG_ANSWER = 1;
     private final int CORRECT_ANSWER = 2;
@@ -112,12 +112,11 @@ public class MainActivity extends LoggingActivity {
                         }
                     }
                 }
-                startActivityForResult(
+                startActivity(
                         CheckActivity.makeIntent(MainActivity.this,
                                 (countAnswerTrue + countAnswerWrong),
                                 mQuestionBank.length,
-                                countAnswerTrue),
-                        REQUEST_CODE_CHECK);
+                                countAnswerTrue));
             }
         });
     }
