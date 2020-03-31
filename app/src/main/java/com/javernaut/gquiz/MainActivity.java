@@ -1,5 +1,6 @@
 package com.javernaut.gquiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,7 @@ public class MainActivity extends LoggingActivity {
     private Button nextButton;
     private TextView questionView;
 
-    private Question[] mQuestionBank = new Question[] {
+    public static final Question[] QUESTION_BANK = new Question[] {
             new Question(R.string.question_australia, true),
             new Question(R.string.question_oceans, true),
             new Question(R.string.question_mideast, false),
@@ -54,7 +55,7 @@ public class MainActivity extends LoggingActivity {
             @Override
             public void onClick(View v) {
                 // move to next question
-                if (currentQuestionIndex == mQuestionBank.length - 1) {
+                if (currentQuestionIndex == QUESTION_BANK.length - 1) {
                     currentQuestionIndex = 0;
                 } else {
                     currentQuestionIndex++;
@@ -64,6 +65,13 @@ public class MainActivity extends LoggingActivity {
                 applyCurrentQuestion();
             }
         });
+
+        findViewById(R.id.see_all_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AllQuestionsActivity.class));
+            }
+        });
     }
 
     private void applyCurrentQuestion() {
@@ -71,7 +79,7 @@ public class MainActivity extends LoggingActivity {
     }
 
     private Question getCurrentQuestion() {
-        return mQuestionBank[currentQuestionIndex];
+        return QUESTION_BANK[currentQuestionIndex];
     }
 
     private void onAnswerSelected(boolean currentAnswer) {
